@@ -1,6 +1,6 @@
-# Daisy Pokemon
+# Daisy Pokémon
 
-Pokemon
+Pokémon
 
 采用 Vite + Vue3 + TypeScript 搭建的项目
 
