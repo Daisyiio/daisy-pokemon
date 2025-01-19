@@ -1,5 +1,5 @@
 {
-  "name": "plan-random",
+  "name": "daisy-pokemon",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "^1.6.8",
     "element-plus": "^2.9.3",
+    "eslint": "^9.18.0",
     "vue": "^3.4.21",
     "vue-router": "^4.5.0"
   },
