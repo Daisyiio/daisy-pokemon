@@ -1,11 +1,6 @@
 <template>
   <div class="head-menu-box">
-    <div
-      v-for="(item, index) in menuList"
-      :key="index"
-      class="head-menu-item"
-      @click="handleClickMenuItem(item)"
-    >
+    <div v-for="(item, index) in menuList" :key="index" class="head-menu-item" @click="handleClickMenuItem(item)">
       {{ item.label }}
     </div>
   </div>
@@ -14,10 +9,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-type MenuType={ 
+type MenuType = {
   label: string,
   value: string,
-  name:string
+  name: string
 }
 const menuList = ref<MenuType[]>([
   // {
@@ -26,14 +21,14 @@ const menuList = ref<MenuType[]>([
   //   name: "daisyHome",
   // },
   {
-    label:'Pokémon',
-    value:'pokemon',
-    name:'pokemon'
+    label: 'Pokémon',
+    value: 'pokemon',
+    name: 'pokemon'
   },
 ]);
 const router = useRouter();
 
-function handleClickMenuItem(data:MenuType) {
+function handleClickMenuItem(data: MenuType) {
   router.push({
     name: data.name,
   });
@@ -46,11 +41,13 @@ function handleClickMenuItem(data:MenuType) {
   flex-direction: row;
   align-items: center;
   width: min(99%, 980px);
+
   .head-menu-item {
     padding: 0 10px;
     color: #000;
     cursor: pointer;
-    &:hover{
+
+    &:hover {
       font-weight: bold;
     }
   }
