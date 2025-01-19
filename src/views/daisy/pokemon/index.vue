@@ -40,14 +40,15 @@
         <div class="screen-tab1-result" v-show="curScreenTab === '1'">
           <div class="screen-title">筛选</div>
           <div class="screen-type-list">
-            <div v-for="(item,index) in attributeArray" :key="`${item.label}--${index}`" class="type-item" @click="handleClickCheckAttribute(item)"
-              :style="{ '--typeColor': item.color, '--typeColorOpacity': `${item.color}a1` }" :title="item.title as string">
+            <div v-for="item in attributeArray" :key="item.label" class="type-item" @click="handleClickCheckAttribute(item)"
+              :style="{ '--typeColor': item.color, '--typeColorOpacity': `${item.color}a1` }" :title="item.title">
               <div class="type-item-img-box" :class="{ 'type-item-active': checkedArray.includes(item.label) }">
-                <img :src="exportImgSrc(item.label as string)" />
+                <img :src="exportImgSrc(item.label)" />
               </div>
               <div class="type-item-title" :class="{ 'type-item-title-active': checkedArray.includes(item.label) }">
                 {{ item.title }}</div>
             </div>
+            
           </div>
         </div>
         <div class="screen-tab2-result" v-show="curScreenTab ==='2'">
@@ -196,9 +197,9 @@ type AttributeDic = {
   };
 };
 type attributeArrayType = {
-  label: String,
-  title: String,
-  color:String
+  label: string,
+  title: string,
+  color:string
 }
 // 属性字典
 const attributeDic = ref<AttributeDic>({
@@ -264,7 +265,6 @@ const getListData = () => {
   pageloading.value = true
   getPokemonList(pageOption.value)
     .then(({ data }) => {
-      console.log(data,'data')
       //item定义类型 
       pokemonList.value = data.pokemons.map((item: { pokemon_type_id: string; pokemon_type_name: string; }) => {
         return {
@@ -289,7 +289,6 @@ const changeSearch = () => {
     "pokemon_region_id[]": regionFilterData.value?.length ? regionFilterData.value : undefined
   }
   getPokemonList(prarms).then(({ data }) => {
-    console.log(data,'data')
     //item定义类型 
     pokemonList.value = data.pokemons.map((item: getPokemonListInterFace) => {
       return {
