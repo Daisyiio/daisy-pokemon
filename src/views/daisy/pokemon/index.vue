@@ -18,7 +18,7 @@
               {{ item.label }}
             </option>
           </select>
-          <label>地区：</label>
+          <label>地区： </label>
           <!-- TODO 地区选择框可无上限多选 暂未实现 -->
           <select v-model="regionFilterData">
             <option v-for="item in regionArray" :key="item.value" :value="item.value">
@@ -35,12 +35,15 @@
     <div class="daisy-pokemon-main-body-box">
       <div class="screen-box">
         <div class="screen-tab-list-box">
-          <div class="screen-tab-item" v-for="(item,index) in screenTabList" :key="`${item.value}-${index}`" @click="handleClickScreenTabItem(item)" :class="{'screen-tab-item-active':curScreenTab ===item.value}">{{item.label}}</div>
+          <div class="screen-tab-item" v-for="(item, index) in screenTabList" :key="`${item.value}-${index}`"
+            @click="handleClickScreenTabItem(item)" :class="{ 'screen-tab-item-active': curScreenTab === item.value }">
+            {{ item.label }}</div>
         </div>
         <div class="screen-tab1-result" v-show="curScreenTab === '1'">
           <div class="screen-title">筛选</div>
           <div class="screen-type-list">
-            <div v-for="item in attributeArray" :key="item.label" class="type-item" @click="handleClickCheckAttribute(item)"
+            <div v-for="item in attributeArray" :key="item.label" class="type-item"
+              @click="handleClickCheckAttribute(item)"
               :style="{ '--typeColor': item.color, '--typeColorOpacity': `${item.color}a1` }" :title="item.title">
               <div class="type-item-img-box" :class="{ 'type-item-active': checkedArray.includes(item.label) }">
                 <img :src="exportImgSrc(item.label)" />
@@ -48,28 +51,16 @@
               <div class="type-item-title" :class="{ 'type-item-title-active': checkedArray.includes(item.label) }">
                 {{ item.title }}</div>
             </div>
-            
           </div>
         </div>
-        <div class="screen-tab2-result" v-show="curScreenTab ==='2'">
+        <div class="screen-tab2-result" v-show="curScreenTab === '2'">
           <div class="screen-title">高级搜索</div>
           <div class="advance-search-item">
             <div class="advance-search-label">属性:</div>
             <div class="advance-search-row">
-               <el-select
-                  v-model="screenSearchForm.type"
-                  multiple
-                  :multiple-limit="2"
-                  clearable
-                  placeholder="请选择属性"
-                >
-                  <el-option
-                    v-for="item in typeArray"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
+              <el-select v-model="screenSearchForm.type" multiple :multiple-limit="2" clearable placeholder="请选择属性">
+                <el-option v-for="item in typeArray" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
             </div>
           </div>
         </div>
@@ -120,7 +111,7 @@
 import { getPokemonList } from "@/api/pokemon";
 import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import { abilityArray, typeArray, regionArray } from "./types/pokemon_id";
-import type {getPokemonListInterFace} from './types/pokemonApi'
+import type { getPokemonListInterFace } from './types/pokemonApi'
 //类型声明
 type LabelValueType = {
   label: string;
@@ -136,12 +127,12 @@ const props = defineProps({
 })
 type pageOptionType = {
   pokemon_ability_id: string,
-  zukan_id_from:number
+  zukan_id_from: number
 }
 //搜索内容
 const searchData = ref<string>('')
 const screenSearchForm = ref<{ type: string }>({
-  type:''
+  type: ''
 })
 //筛选内容
 const typeFilterData = ref<string>('');
@@ -166,22 +157,23 @@ const pageloading = ref<boolean>(false);
 
 //当前选中的tab
 const curScreenTab = ref<string>('1')
+
 //查询列表的tab数组
-const screenTabList  = ref<LabelValueTypeList>([
-  {label:'属性',value:'1'},
-  {label:'高级',value:'2'},
+const screenTabList = ref<LabelValueTypeList>([
+  { label: '属性', value: '1' },
+  { label: '高级', value: '2' },
 ])
 //tab 点击事件
-const handleClickScreenTabItem = (data:LabelValueType)=>{
+const handleClickScreenTabItem = (data: LabelValueType) => {
   curScreenTab.value = data.value
 };
 //列表滚动事件
-const handleScroll = ():void => {
+const handleScroll = (): void => {
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
     loadMore();
   }
 };
-const loadMore = ():void => {
+const loadMore = (): void => {
   if (pokemonList.value.length <= pokemonNumberLimit.value) return;
   pokemonNumberLimit.value += 60;
 };
@@ -199,7 +191,7 @@ type AttributeDic = {
 type attributeArrayType = {
   label: string,
   title: string,
-  color:string
+  color: string
 }
 // 属性字典
 const attributeDic = ref<AttributeDic>({
@@ -245,7 +237,7 @@ const attributeArray = ref<attributeArrayType[]>([
 ]);
 //当前选中的属性 的数组
 const checkedArray = ref<any[]>([])
-const handleClickCheckAttribute = (item:attributeArrayType) => {
+const handleClickCheckAttribute = (item: attributeArrayType) => {
   if (checkedArray.value.includes(item.label)) {
     let index = checkedArray.value.findIndex(res => res === item.label)
     if (index > -1) {
@@ -315,8 +307,8 @@ const pokemonCardStyle = (item: getPokemonListInterFace) => {
     return {
       background: `${attributeDic.value[typeArray[0]]?.color}a1`
     };
-  } else { 
-    return  { background: 'transparent' };
+  } else {
+    return { background: 'transparent' };
   }
 };
 
@@ -411,6 +403,7 @@ $bodyWidth: min(90%, 1200px); //内容模块宽度
     display: flex;
     flex-direction: row;
     position: relative;
+
     .screen-box {
       position: sticky;
       top: 70px;
@@ -426,7 +419,8 @@ $bodyWidth: min(90%, 1200px); //内容模块宽度
       flex-shrink: 0;
       user-select: none;
       box-shadow: 5px 5px 6px #000;
-      .screen-tab-list-box{
+
+      .screen-tab-list-box {
         position: absolute;
         left: -30px;
         top: 0;
@@ -438,7 +432,8 @@ $bodyWidth: min(90%, 1200px); //内容模块宽度
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        .screen-tab-item{
+
+        .screen-tab-item {
           color: #000;
           font-size: 14px;
           font-weight: bold;
@@ -448,33 +443,39 @@ $bodyWidth: min(90%, 1200px); //内容模块宽度
           align-items: center;
           justify-content: center;
           letter-spacing: 4px;
-          padding: 9px 0 5px 0 ;
+          padding: 9px 0 5px 0;
           cursor: pointer;
           transition: all 0.2s;
           box-shadow: 0 0 3px #000;
         }
-        .screen-tab-item-active{
+
+        .screen-tab-item-active {
           background: rgba($color: #Fff, $alpha: 0.6);
         }
       }
-      .screen-tab2-result{
-        .advance-search-item{
+
+      .screen-tab2-result {
+        .advance-search-item {
           display: flex;
           flex-direction: column;
-          .advance-search-row{
-            .el-select__placeholder.is-transparent{
+
+          .advance-search-row {
+            .el-select__placeholder.is-transparent {
               color: #FFF;
             }
-            .el-select__wrapper{
+
+            .el-select__wrapper {
               background: transparent;
-              .el-tag{
-                max-width:58px !important;
+
+              .el-tag {
+                max-width: 58px !important;
                 font-size: 11px;
               }
             }
           }
         }
       }
+
       .screen-title {
         width: 100%;
         color: #333;

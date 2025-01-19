@@ -4,20 +4,15 @@
       <HeadMenuBox />
     </div>
     <transition name="to-top-button">
-      <div
-        class="to-top-button"
-        v-show="!isTop"
-        title="返回顶部"
-        @click="handleClickToTop"
-      >
-      <el-icon>
-        <ArrowUpBold />
-      </el-icon>
-    </div>
+      <div class="to-top-button" v-show="!isTop" title="返回顶部" @click="handleClickToTop">
+        <el-icon>
+          <ArrowUpBold />
+        </el-icon>
+      </div>
     </transition>
     <router-view v-slot="{ Component }" class="padding-default">
       <keep-alive :isTop="isTop">
-         <component :is="Component" />
+        <component :is="Component" />
       </keep-alive>
     </router-view>
     <div class="footer"></div>
@@ -31,8 +26,8 @@ const daisyLayout = ref<HTMLDivElement>();
 // const bottom = ref(false);
 const isTop = ref<boolean>(true);
 const scrollTopNumber = ref<number>(0);
-const scrolling = (e:Event) => {
-  const scrollTop =  ref<number>(window.scrollY);
+const scrolling = (e: Event) => {
+  const scrollTop = ref<number>(window.scrollY);
   scrollTopNumber.value = window.scrollY;
   if (scrollTop.value === 0) {
     isTop.value = true;
@@ -40,8 +35,8 @@ const scrolling = (e:Event) => {
     isTop.value = false;
   }
 };
-function handleClickToTop():void{
-window.scrollTo({
+function handleClickToTop(): void {
+  window.scrollTo({
     // top: daisyLayout.value.offsetHeight, //回到底部
     top: 0,
     left: 0,
@@ -60,12 +55,15 @@ onUnmounted(() => {
 :root {
   --menuHeadHeight: 60px;
 }
-.padding-default{
+
+.padding-default {
   padding: calc(var(--menuHeadHeight) + 10px) 0 10px 0;
   position: relative;
 }
+
 .daisy-default-layout-view {
   position: relative;
+
   .head {
     height: var(--menuHeadHeight);
     width: 100%;
@@ -81,16 +79,19 @@ onUnmounted(() => {
     top: 0;
     z-index: 10;
   }
+
   @keyframes showFormTop {
     from {
       transform: translateY(-100%);
       opacity: 0;
     }
+
     to {
       transform: translateY(0);
       opacity: 1;
     }
   }
+
   .to-top-button {
     position: fixed;
     right: 50px;
@@ -110,11 +111,13 @@ onUnmounted(() => {
     z-index: 99;
     cursor: pointer;
   }
+
   @keyframes showToRight {
     from {
       opacity: 0;
       transform: translateX(100%);
     }
+
     to {
       opacity: 1;
       transform: translateX(0);
@@ -126,15 +129,18 @@ onUnmounted(() => {
     opacity: 0;
     transform: translateX(100%);
   }
+
   .to-top-button-enter-to,
   .to-top-button-leave-from {
     opacity: 1;
     transform: translateX(0);
   }
+
   .to-top-button-enter-active,
   .to-top-button-leave-active {
     transition: all 0.2s;
   }
+
   .footer {
     width: 100%;
   }
