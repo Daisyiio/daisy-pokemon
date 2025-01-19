@@ -1,6 +1,6 @@
 # Plan Random
 
-想到什么写什么，项目和文档中都是
+Pokemon
 
 采用 Vite + Vue3 + TypeScript 搭建的项目
 
