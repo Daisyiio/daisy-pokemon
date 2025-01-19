@@ -24,21 +24,12 @@ const routers: Array<RouteRecordRaw> = [
         name:"pokemon",
         path:'/daisy/pokemon',
         component:()=>import('@/views/daisy/pokemon/index.vue'),
-        meta:{}
+        meta: {
+          title:'Pokémon'
+        }
       },
     ],
   },
-  // // araski主页 add by araski 240427
-  // { 
-  //   path: '/araski',
-  //   name: 'araski',
-  //   component: () => import('@/views/araski/home/araskihome.vue'),
-  //   beforeEnter: (to, from, next) => {  
-  //     to.meta.needsRefresh = true;  
-  //     from.meta.needsRefresh = true;
-  //     next();  
-  //   } 
-  // }
 ]
 
 const router = createRouter({

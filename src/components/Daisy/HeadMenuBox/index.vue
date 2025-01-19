@@ -14,8 +14,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-
-const menuList = ref([
+type MenuType={ 
+  label: string,
+  value: string,
+  name:string
+}
+const menuList = ref<MenuType[]>([
   // {
   //   label: "首页",
   //   value: "home",
@@ -29,7 +33,7 @@ const menuList = ref([
 ]);
 const router = useRouter();
 
-function handleClickMenuItem(data) {
+function handleClickMenuItem(data:MenuType) {
   router.push({
     name: data.name,
   });

@@ -4,7 +4,6 @@
       <div class="search-row" v-if="props.isTop">
         <img src="@/assets/images/pokemon/pokemonlogo.png" class="pokemon-logo" />
         <input type="text" placeholder="使用名称或图鉴编号搜索" v-model="searchData" @keydown.enter="clickSearchIcon" />
-        <!--筛选条件 add by araski 240510-->
         <div class="select-box">
           <label>属性：</label>
           <!-- TODO 属性选择框最多选择2项 暂未实现 -->
@@ -27,8 +26,7 @@
             </option>
           </select>
         </div>
-        <!--排序条件 TODO add by araski 240510-->
-
+        <!--排序条件 -->
         <div class="iconBox" @click="clickSearchIcon">
           <img class="icon" src="@/assets/images/pokemon/search-icon.svg" alt="" />
         </div>
@@ -42,10 +40,10 @@
         <div class="screen-tab1-result" v-show="curScreenTab === '1'">
           <div class="screen-title">筛选</div>
           <div class="screen-type-list">
-            <div v-for="item in attributeArray" :key="item" class="type-item" @click="handleClickCheckAttribute(item)"
-              :style="{ '--typeColor': item.color, '--typeColorOpacity': `${item.color}a1` }" :title="item.title">
+            <div v-for="(item,index) in attributeArray" :key="`${item.label}--${index}`" class="type-item" @click="handleClickCheckAttribute(item)"
+              :style="{ '--typeColor': item.color, '--typeColorOpacity': `${item.color}a1` }" :title="item.title as string">
               <div class="type-item-img-box" :class="{ 'type-item-active': checkedArray.includes(item.label) }">
-                <img :src="exportImgSrc(item.label)" />
+                <img :src="exportImgSrc(item.label as string)" />
               </div>
               <div class="type-item-title" :class="{ 'type-item-title-active': checkedArray.includes(item.label) }">
                 {{ item.title }}</div>
@@ -96,7 +94,7 @@
               <img :src="`https://www.pokemon.cn/play/resources/pokedex${item.file_name}`" class="pokemonimg" />
               <img src="@/assets/images/pokemon/random_center_bg.png" class="pokemonbgimg" />
             </div>
-            <div class="pokemon-type-row">
+            <div class="pokemon-type-row" v-if="item.pokemon_type_name_arry && item.pokemon_type_name_arry.length">
               <div class="pokemon-type-row-item" v-for="(otem, i) in item.pokemon_type_id_arry">
                 <img :src="exportImgSrc(otem)" />
                 {{ item.pokemon_type_name_arry[i] }}
@@ -120,12 +118,14 @@
 <script setup lang="ts">
 import { getPokemonList } from "@/api/pokemon";
 import { ref, onMounted, computed, onBeforeUnmount } from "vue";
-import { abilityArray, typeArray, regionArray } from "./types/pokemon_id.ts"
+import { abilityArray, typeArray, regionArray } from "./types/pokemon_id";
+import type {getPokemonListInterFace} from './types/pokemonApi'
 //类型声明
 type LabelValueType = {
-    label: string;
-    value: string;
-}[];
+  label: string;
+  value: string;
+}
+type LabelValueTypeList = LabelValueType[];
 //搜索栏显示状态
 const props = defineProps({
   isTop: {
@@ -133,48 +133,54 @@ const props = defineProps({
     default: true
   },
 })
+type pageOptionType = {
+  pokemon_ability_id: string,
+  zukan_id_from:number
+}
 //搜索内容
-const searchData = ref('')
-const screenSearchForm = ref<any>({})
+const searchData = ref<string>('')
+const screenSearchForm = ref<{ type: string }>({
+  type:''
+})
 //筛选内容
-const typeFilterData = ref<any>('');
+const typeFilterData = ref<string>('');
 const abilityFilterData = ref<string>('');
 const regionFilterData = ref<string>('');
 
 //列表原数据
-const pokemonList = ref<any[]>([]);
+const pokemonList = ref<getPokemonListInterFace[]>([]);
 //请求参数
-const pageOption = ref({
+const pageOption = ref<pageOptionType>({
   pokemon_ability_id: "",
   zukan_id_from: 1,
   // zukan_id_to: 898,
 });
 //列表分页
-const pokemonNumberLimit = ref(60);
+const pokemonNumberLimit = ref<number>(60);
 //列表加载数据
-const pokemonItems = computed(() => pokemonList.value.slice(0, pokemonNumberLimit.value));
+const pokemonItems = computed<getPokemonListInterFace[]>(() => pokemonList.value.slice(0, pokemonNumberLimit.value));
 
 //列表加载状态
-const pageloading = ref(false);
+const pageloading = ref<Boolean>(false);
 
 //当前选中的tab
-const curScreenTab = ref('1')
+const curScreenTab = ref<string>('1')
 //查询列表的tab数组
-const screenTabList  = ref<LabelValueType>([
+const screenTabList  = ref<LabelValueTypeList>([
   {label:'属性',value:'1'},
   {label:'高级',value:'2'},
 ])
 //tab 点击事件
-const handleClickScreenTabItem = (data:{value:string})=>{
+const handleClickScreenTabItem = (data:LabelValueType)=>{
   curScreenTab.value = data.value
 };
 //列表滚动事件
-const handleScroll = () => {
+const handleScroll = ():void => {
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
     loadMore();
   }
 };
-const loadMore = () => {
+const loadMore = ():void => {
   if (pokemonList.value.length <= pokemonNumberLimit.value) return;
   pokemonNumberLimit.value += 60;
 };
@@ -183,12 +189,17 @@ const loadMore = () => {
 const exportImgSrc = (pokemon_type_id: string): string => {
   return import.meta.resolve(`../../../assets/images/pokemon/type/icon_type_${pokemon_type_id}_on.svg`);
 };
-// 属性字典样式 add by araski 240510
+// 属性字典样式 
 type AttributeDic = {
   [type: string]: {
     color: string;
   };
 };
+type attributeArrayType = {
+  label: String,
+  title: String,
+  color:String
+}
 // 属性字典
 const attributeDic = ref<AttributeDic>({
   normal: { color: "#9fa0a0" }, //一般
@@ -211,7 +222,7 @@ const attributeDic = ref<AttributeDic>({
   fairy: { color: "#fe7eb7" }, //妖精
 });
 // 属性数组
-const attributeArray = ref<any[]>([
+const attributeArray = ref<attributeArrayType[]>([
   { label: 'normal', title: '一般', color: '#9fa0a0' },
   { label: 'fire', title: '火', color: '#fe3700' },
   { label: 'water', title: '水', color: '#0093e4' },
@@ -233,7 +244,7 @@ const attributeArray = ref<any[]>([
 ]);
 //当前选中的属性 的数组
 const checkedArray = ref<any[]>([])
-const handleClickCheckAttribute = (item: { label: string }) => {
+const handleClickCheckAttribute = (item:attributeArrayType) => {
   if (checkedArray.value.includes(item.label)) {
     let index = checkedArray.value.findIndex(res => res === item.label)
     if (index > -1) {
@@ -253,7 +264,8 @@ const getListData = () => {
   pageloading.value = true
   getPokemonList(pageOption.value)
     .then(({ data }) => {
-      //item定义类型 edit by araski 240510
+      console.log(data,'data')
+      //item定义类型 
       pokemonList.value = data.pokemons.map((item: { pokemon_type_id: string; pokemon_type_name: string; }) => {
         return {
           ...item,
@@ -277,8 +289,9 @@ const changeSearch = () => {
     "pokemon_region_id[]": regionFilterData.value?.length ? regionFilterData.value : undefined
   }
   getPokemonList(prarms).then(({ data }) => {
-    //item定义类型 edit by araski 240510
-    pokemonList.value = data.pokemons.map((item: { pokemon_type_id: string; pokemon_type_name: string; }) => {
+    console.log(data,'data')
+    //item定义类型 
+    pokemonList.value = data.pokemons.map((item: getPokemonListInterFace) => {
       return {
         ...item,
         pokemon_type_id_arry: item.pokemon_type_id.split(','),
@@ -290,23 +303,26 @@ const changeSearch = () => {
   })
 }
 
-// 根据属性，生成每个item 的样式 add by araski 240510
-const pokemonCardStyle = (item: { pokemon_type_id_arry: string | any[]; }) => {
-  if (item.pokemon_type_id_arry.length === 2) {
+// 根据属性，生成每个item 的样式 
+const pokemonCardStyle = (item: getPokemonListInterFace) => {
+  const typeArray = item?.pokemon_type_id_arry;
+  if (typeArray && typeArray.length === 2) {
     return {
       background: `linear-gradient(to bottom, 
-      ${attributeDic.value[item.pokemon_type_id_arry[0]].color}a1, 
-      ${attributeDic.value[item.pokemon_type_id_arry[1]].color}a1)`
+      ${attributeDic.value[typeArray[0]]?.color}a1, 
+      ${attributeDic.value[typeArray[1]]?.color}a1)`
     };
-  } else {
+  } else if (typeArray && typeArray.length === 1) {
     return {
-      background: `${attributeDic.value[item.pokemon_type_id_arry[0]].color}a1`
+      background: `${attributeDic.value[typeArray[0]]?.color}a1`
     };
+  } else { 
+    return  { background: 'transparent' };
   }
 };
 
 const clickSearchIcon = () => {
-  // 重置显示数量 moved by araski 240510
+  // 重置显示数量 
   pokemonNumberLimit.value = 60;
   changeSearch();
 }
@@ -441,8 +457,6 @@ $bodyWidth: min(90%, 1200px); //内容模块宽度
         .screen-tab-item-active{
           background: rgba($color: #Fff, $alpha: 0.6);
         }
-      }
-      .screen-tab1-result{
       }
       .screen-tab2-result{
         .advance-search-item{
