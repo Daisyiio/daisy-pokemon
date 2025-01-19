@@ -27,12 +27,12 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 import HeadMenuBox from "@/components/Daisy/HeadMenuBox/index.vue";
-const daisyLayout = ref();
+const daisyLayout = ref<HTMLDivElement>();
 // const bottom = ref(false);
-const isTop = ref(true);
-const scrollTopNumber = ref(0);
+const isTop = ref<boolean>(true);
+const scrollTopNumber = ref<number>(0);
 const scrolling = (e:Event) => {
-  const scrollTop =  ref(window.scrollY);
+  const scrollTop =  ref<number>(window.scrollY);
   scrollTopNumber.value = window.scrollY;
   if (scrollTop.value === 0) {
     isTop.value = true;

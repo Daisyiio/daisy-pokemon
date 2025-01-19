@@ -162,7 +162,7 @@ const pokemonNumberLimit = ref<number>(60);
 const pokemonItems = computed<getPokemonListInterFace[]>(() => pokemonList.value.slice(0, pokemonNumberLimit.value));
 
 //列表加载状态
-const pageloading = ref<Boolean>(false);
+const pageloading = ref<boolean>(false);
 
 //当前选中的tab
 const curScreenTab = ref<string>('1')
